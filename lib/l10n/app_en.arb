@@ -1,0 +1,74 @@
+{
+  "@@locale": "en",
+  "appTitle": "Oxlift",
+
+  "navToday": "Today",
+  "navLibrary": "Library",
+  "navWorkouts": "Workouts",
+  "navProgress": "Progress",
+  "navProfile": "Profile",
+
+  "back": "Back",
+
+  "todayGoodMorning": "Good morning",
+  "todayGoodAfternoon": "Good afternoon",
+  "todayGoodEvening": "Good evening",
+  "todayGreeting": "Ready to lift?",
+  "todayHeroTitle": "Explore {count} exercises",
+  "@todayHeroTitle": {
+    "placeholders": { "count": { "type": "int", "format": "decimalPattern" } }
+  },
+  "todayHeroBody": "Animated demos, target muscles and step-by-step form cues.",
+  "todayHeroCta": "Browse library",
+  "todayThisWeek": "This week",
+  "statWorkouts": "Workouts",
+  "statVolume": "Volume",
+  "statStreak": "Day streak",
+  "todayStatsHint": "Log your first workout to start filling these in.",
+  "todayTrainByMuscle": "Train by muscle",
+  "todaySeeAll": "See all",
+
+  "libraryTitle": "Library",
+  "librarySearchHint": "Search exercises",
+  "libraryAll": "All",
+  "libraryEquipment": "Equipment",
+  "libraryAnyEquipment": "Any equipment",
+  "libraryEmpty": "No exercises match your filters.",
+  "libraryClearFilters": "Clear filters",
+  "libraryCount": "{count, plural, =1{1 exercise} other{{count} exercises}}",
+  "@libraryCount": {
+    "placeholders": { "count": { "type": "int", "format": "decimalPattern" } }
+  },
+  "librarySyncing": "Downloading exercise library… {done}/{total}",
+  "@librarySyncing": {
+    "placeholders": { "done": { "type": "int" }, "total": { "type": "int" } }
+  },
+  "librarySyncFailed": "Couldn't download the exercise library. Check your connection.",
+  "retry": "Retry",
+
+  "exerciseTarget": "Target",
+  "exerciseSecondary": "Secondary",
+  "exerciseMuscles": "Muscles worked",
+  "exerciseEquipment": "Equipment",
+  "exerciseBodyPart": "Body part",
+  "exerciseInstructions": "How to do it",
+  "exerciseNotFound": "Exercise not found.",
+
+  "comingSoonTitle": "Coming soon",
+  "workoutsComingSoon": "Build routines, set your sets, reps and weights, and run live workouts with a rest timer.",
+  "progressComingSoon": "Charts, personal records, body measurements and your training heatmap.",
+
+  "profileTitle": "Profile",
+  "profileGuest": "Guest lifter",
+  "profileGuestBody": "Sign in to back up and sync your training. Coming soon.",
+  "settingsAppearance": "Appearance",
+  "settingsThemeDark": "Dark",
+  "settingsThemeLight": "Light",
+  "settingsThemeSystem": "System",
+  "settingsUnits": "Weight unit",
+  "settingsUnitKg": "kg",
+  "settingsUnitLb": "lb",
+  "settingsCatalog": "Exercise library",
+  "settingsCatalogResync": "Re-download exercise library",
+  "settingsCatalogAttribution": "Exercise data and animations by ExerciseDB"
+}
