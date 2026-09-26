@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/router/app_router.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/widgets/glass/glass.dart';
 import '../../core/widgets/glass/glass_nav_bar.dart';
 import '../../l10n/app_localizations.dart';
 import '../library/library_providers.dart';
+import '../workouts/widgets/workout_widgets.dart';
+import '../workouts/workout_providers.dart';
 
 class HomeShell extends ConsumerStatefulWidget {
   const HomeShell({super.key, required this.navigationShell});
@@ -32,6 +37,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       extendBody: true, // content scrolls behind the floating glass bar
       body: shell,
       bottomNavigationBar: GlassNavBar(
+        header: const _ActiveWorkoutBanner(),
         selectedIndex: shell.currentIndex,
         onSelected: (i) =>
             shell.goBranch(i, initialLocation: i == shell.currentIndex),
@@ -63,6 +69,80 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// "Workout in progress" pill above the tab bar; tap to resume.
+class _ActiveWorkoutBanner extends ConsumerWidget {
+  const _ActiveWorkoutBanner();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final active = ref.watch(activeWorkoutProvider).value;
+    final dark = theme.brightness == Brightness.dark;
+
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeOutCubic,
+      child: active == null
+          ? const SizedBox(width: double.infinity)
+          : Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Glass(
+                blur: true,
+                radius: 22,
+                tint: AppColors.volt,
+                tintStrength: dark ? 0.22 : 0.45,
+                padding: const EdgeInsets.fromLTRB(16, 10, 10, 10),
+                onTap: () => context.push(AppRoutes.workout),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.fitness_center_rounded,
+                      size: 20,
+                      color: dark ? AppColors.volt : AppColors.ink,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        active.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.titleSmall,
+                      ),
+                    ),
+                    ElapsedClock(
+                      start: active.startedAt,
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        fontFeatures: const [FontFeature.tabularFigures()],
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 6,
+                        ),
+                        child: Text(
+                          l10n.workoutsResume,
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: theme.colorScheme.onPrimary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }

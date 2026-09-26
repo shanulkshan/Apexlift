@@ -75,6 +75,18 @@ class ExerciseRepository {
       (_db.select(_db.exercises)..where((e) => e.id.equals(id)))
           .watchSingleOrNull();
 
+  Future<Map<String, Exercise>> getByIds(Iterable<String> ids) async {
+    final rows = await (_db.select(_db.exercises)
+          ..where((e) => e.id.isIn(ids.toSet())))
+        .get();
+    return {for (final e in rows) e.id: e};
+  }
+
+  Stream<Map<String, Exercise>> watchByIds(Iterable<String> ids) =>
+      (_db.select(_db.exercises)..where((e) => e.id.isIn(ids.toSet())))
+          .watch()
+          .map((rows) => {for (final e in rows) e.id: e});
+
   /// Downloads the catalog page by page, saving each page as it arrives so
   /// an interrupted sync resumes where it stopped. Emits progress per page.
   Stream<CatalogSyncProgress> syncCatalog({bool force = false}) async* {

@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/utils/weight.dart';
 import '../../core/widgets/glass/glass.dart';
 import '../../core/widgets/glass/glass_controls.dart';
 import '../../core/widgets/glass/glass_nav_bar.dart';
 import '../../core/widgets/glass/page_title.dart';
 import '../../core/widgets/ox_logo.dart';
+import '../../data/profile/user_profile.dart';
 import '../../l10n/app_localizations.dart';
 import '../library/library_providers.dart';
 import '../settings/settings_controller.dart';
+import 'user_profile_controller.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -26,7 +31,7 @@ class ProfileScreen extends ConsumerWidget {
       body: SafeArea(
         bottom: false,
         child: ListView(
-          padding: const EdgeInsets.only(bottom: kGlassNavBarClearance),
+          padding: EdgeInsets.only(bottom: navBarClearance(context)),
           children: [
             PageTitle(title: l10n.profileTitle),
             Padding(
@@ -87,6 +92,15 @@ class ProfileScreen extends ConsumerWidget {
                       ],
                     ),
                   ),
+                  SectionLabel(
+                    l10n.profileBodySection,
+                    trailing: TextButton.icon(
+                      onPressed: () => context.push(AppRoutes.editBody),
+                      icon: const Icon(Icons.edit_rounded, size: 16),
+                      label: Text(l10n.profileBodyEdit),
+                    ),
+                  ),
+                  const _BodySummary(),
                   SectionLabel(l10n.settingsAppearance),
                   GlassSegmented<ThemeMode>(
                     segments: [
@@ -152,6 +166,78 @@ class ProfileScreen extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// One-line summary of the body profile, e.g. "Male · 28 y · 178 cm · 80 kg".
+class _BodySummary extends ConsumerWidget {
+  const _BodySummary();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final p = ref.watch(userProfileProvider);
+    final unit = ref.watch(settingsProvider.select((s) => s.unit));
+
+    final facts = <String>[
+      if (p.sex != Sex.unspecified)
+        p.sex == Sex.male ? l10n.profileSexMale : l10n.profileSexFemale,
+      if (p.age != null) '${p.age} ${l10n.profileYears}',
+      if (p.heightCm != null) '${p.heightCm!.round()} cm',
+      if (p.weightKg != null) '${formatWeight(p.weightKg!, unit)} ${unit.symbol}',
+    ];
+    final training = [
+      switch (p.experience) {
+        Experience.beginner => l10n.experienceBeginner,
+        Experience.intermediate => l10n.experienceIntermediate,
+        Experience.advanced => l10n.experienceAdvanced,
+      },
+      switch (p.goal) {
+        TrainingGoal.muscle => l10n.goalMuscle,
+        TrainingGoal.strength => l10n.goalStrength,
+        TrainingGoal.endurance => l10n.goalEndurance,
+        TrainingGoal.general => l10n.goalGeneral,
+      },
+    ];
+
+    return Glass(
+      radius: 22,
+      padding: const EdgeInsets.all(16),
+      onTap: () => context.push(AppRoutes.editBody),
+      child: Row(
+        children: [
+          Glass(
+            shape: BoxShape.circle,
+            shadow: false,
+            child: const SizedBox.square(
+              dimension: 42,
+              child: Icon(Icons.monitor_weight_outlined, size: 22),
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  facts.isEmpty ? l10n.profileBodyEmpty : facts.join(' · '),
+                  style: facts.isEmpty
+                      ? theme.textTheme.bodyMedium
+                      : theme.textTheme.titleSmall,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  training.join(' · '),
+                  style: theme.textTheme.bodySmall
+                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

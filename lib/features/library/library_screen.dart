@@ -7,6 +7,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/utils/text.dart';
 import '../../core/widgets/glass/glass.dart';
 import '../../core/widgets/glass/glass_controls.dart';
+import '../../core/widgets/glass/glass_sheet.dart';
 import '../../core/widgets/glass/glass_nav_bar.dart';
 import '../../data/db/app_database.dart';
 import '../../l10n/app_localizations.dart';
@@ -21,8 +22,9 @@ class LibraryScreen extends ConsumerStatefulWidget {
 }
 
 class _LibraryScreenState extends ConsumerState<LibraryScreen> {
-  late final _search =
-      TextEditingController(text: ref.read(libraryFilterProvider).query);
+  late final _search = TextEditingController(
+    text: ref.read(libraryFilterProvider).query,
+  );
 
   @override
   void dispose() {
@@ -49,8 +51,10 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
             backgroundColor: Colors.transparent,
             titleSpacing: 20,
             toolbarHeight: 60,
-            title: Text(l10n.libraryTitle,
-                style: theme.textTheme.headlineMedium),
+            title: Text(
+              l10n.libraryTitle,
+              style: theme.textTheme.headlineMedium,
+            ),
             flexibleSpace: const GlassBar(),
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(_headerHeight),
@@ -64,8 +68,9 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                       child: GlassSearchField(
                         controller: _search,
                         hint: l10n.librarySearchHint,
-                        onChanged:
-                            ref.read(libraryFilterProvider.notifier).setQuery,
+                        onChanged: ref
+                            .read(libraryFilterProvider.notifier)
+                            .setQuery,
                       ),
                     ),
                     const _FilterBar(),
@@ -84,13 +89,15 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
           else if (items.isEmpty)
             SliverFillRemaining(
               hasScrollBody: false,
-              child: _EmptyState(onClear: () {
-                _search.clear();
-                ref.read(libraryFilterProvider.notifier)
-                  ..setQuery('')
-                  ..setBodyPart(null)
-                  ..setEquipment(null);
-              }),
+              child: _EmptyState(
+                onClear: () {
+                  _search.clear();
+                  ref.read(libraryFilterProvider.notifier)
+                    ..setQuery('')
+                    ..setBodyPart(null)
+                    ..setEquipment(null);
+                },
+              ),
             )
           else ...[
             SliverPadding(
@@ -99,13 +106,13 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                 child: Text(
                   l10n.libraryCount(items.length),
                   style: theme.textTheme.labelLarge?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant),
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
             ),
             SliverPadding(
-              padding:
-                  const EdgeInsets.fromLTRB(16, 0, 16, kGlassNavBarClearance),
+              padding: EdgeInsets.fromLTRB(16, 0, 16, navBarClearance(context)),
               sliver: SliverList.separated(
                 itemCount: items.length,
                 separatorBuilder: (_, _) => const SizedBox(height: 10),
@@ -163,86 +170,50 @@ class _FilterBar extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final current = ref.read(libraryFilterProvider).equipment;
     // Wrapped so "Any equipment" (null) is distinguishable from a dismiss.
-    final picked = await showModalBottomSheet<({String? value})>(
+    final picked = await showGlassSheet<({String? value})>(
       context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      builder: (context) => _GlassSheet(
-        child: DraggableScrollableSheet(
-          expand: false,
-          initialChildSize: 0.6,
-          maxChildSize: 0.92,
-          builder: (context, controller) {
-            final theme = Theme.of(context);
-            return ListView(
-              controller: controller,
-              padding: const EdgeInsets.fromLTRB(8, 4, 8, 16),
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
-                  child: Text(l10n.libraryEquipment,
-                      style: theme.textTheme.titleLarge),
+      scrollControlled: true,
+      builder: (context) => DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: 0.6,
+        maxChildSize: 0.92,
+        builder: (context, controller) {
+          final theme = Theme.of(context);
+          return ListView(
+            controller: controller,
+            padding: const EdgeInsets.fromLTRB(8, 4, 8, 16),
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+                child: Text(
+                  l10n.libraryEquipment,
+                  style: theme.textTheme.titleLarge,
                 ),
-                for (final option in [null, ...equipmentOptions])
-                  ListTile(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14)),
-                    title: Text(option?.titleCase ?? l10n.libraryAnyEquipment),
-                    trailing: option == current
-                        ? Icon(Icons.check_circle_rounded,
-                            color: theme.brightness == Brightness.dark
-                                ? AppColors.volt
-                                : AppColors.voltDeep)
-                        : null,
-                    onTap: () => Navigator.pop(context, (value: option)),
+              ),
+              for (final option in [null, ...equipmentOptions])
+                ListTile(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
                   ),
-              ],
-            );
-          },
-        ),
+                  title: Text(option?.titleCase ?? l10n.libraryAnyEquipment),
+                  trailing: option == current
+                      ? Icon(
+                          Icons.check_circle_rounded,
+                          color: theme.brightness == Brightness.dark
+                              ? AppColors.volt
+                              : AppColors.voltDeep,
+                        )
+                      : null,
+                  onTap: () => Navigator.pop(context, (value: option)),
+                ),
+            ],
+          );
+        },
       ),
     );
     if (picked != null) {
       ref.read(libraryFilterProvider.notifier).setEquipment(picked.value);
     }
-  }
-}
-
-/// Floating frosted sheet with a drag handle.
-class _GlassSheet extends StatelessWidget {
-  const _GlassSheet({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-      child: Glass(
-        blur: true,
-        radius: 30,
-        // Extra opacity so list text stays readable over busy content.
-        tint: scheme.surface,
-        tintStrength: 0.55,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 10),
-            Container(
-              width: 40,
-              height: 5,
-              decoration: BoxDecoration(
-                color: scheme.onSurfaceVariant.withValues(alpha: 0.5),
-                borderRadius: BorderRadius.circular(3),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Flexible(child: child),
-          ],
-        ),
-      ),
-    );
   }
 }
 
@@ -257,54 +228,55 @@ class _SyncBanner extends ConsumerWidget {
 
     return switch (state) {
       CatalogSyncing(:final done, :final total) => Padding(
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-          child: Glass(
-            radius: 18,
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(Icons.cloud_download_rounded, size: 18),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(l10n.librarySyncing(done, total),
-                          style: theme.textTheme.labelLarge),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+        child: Glass(
+          radius: 18,
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.cloud_download_rounded, size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      l10n.librarySyncing(done, total),
+                      style: theme.textTheme.labelLarge,
                     ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                LinearProgressIndicator(
-                  value: total == 0 ? null : done / total,
-                  minHeight: 6,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              LinearProgressIndicator(
+                value: total == 0 ? null : done / total,
+                minHeight: 6,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ],
           ),
         ),
+      ),
       CatalogFailed() => Padding(
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-          child: Glass(
-            radius: 18,
-            tint: theme.colorScheme.error,
-            tintStrength: 0.15,
-            padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
-            child: Row(
-              children: [
-                Icon(Icons.cloud_off_rounded, color: theme.colorScheme.error),
-                const SizedBox(width: 12),
-                Expanded(child: Text(l10n.librarySyncFailed)),
-                TextButton(
-                  onPressed: () =>
-                      ref.read(catalogSyncProvider.notifier).sync(),
-                  child: Text(l10n.retry),
-                ),
-              ],
-            ),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+        child: Glass(
+          radius: 18,
+          tint: theme.colorScheme.error,
+          tintStrength: 0.15,
+          padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+          child: Row(
+            children: [
+              Icon(Icons.cloud_off_rounded, color: theme.colorScheme.error),
+              const SizedBox(width: 12),
+              Expanded(child: Text(l10n.librarySyncFailed)),
+              TextButton(
+                onPressed: () => ref.read(catalogSyncProvider.notifier).sync(),
+                child: Text(l10n.retry),
+              ),
+            ],
           ),
         ),
+      ),
       _ => const SizedBox.shrink(),
     };
   }
@@ -320,7 +292,7 @@ class _EmptyState extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(32, 32, 32, kGlassNavBarClearance),
+      padding: EdgeInsets.fromLTRB(32, 32, 32, navBarClearance(context)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -335,8 +307,9 @@ class _EmptyState extends StatelessWidget {
           Text(
             l10n.libraryEmpty,
             textAlign: TextAlign.center,
-            style: theme.textTheme.bodyLarge
-                ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
           ),
           const SizedBox(height: 12),
           TextButton.icon(
@@ -404,8 +377,10 @@ class _ExerciseTile extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          Icon(Icons.chevron_right_rounded,
-              color: theme.colorScheme.onSurfaceVariant),
+          Icon(
+            Icons.chevron_right_rounded,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
         ],
       ),
     );
@@ -420,20 +395,20 @@ class _MiniTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => DecoratedBox(
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(100),
-          border: Border.all(color: color.withValues(alpha: 0.25)),
+    decoration: BoxDecoration(
+      color: color.withValues(alpha: 0.12),
+      borderRadius: BorderRadius.circular(100),
+      border: Border.all(color: color.withValues(alpha: 0.25)),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 2),
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+          color: color,
+          fontWeight: FontWeight.w600,
         ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 2),
-          child: Text(
-            label,
-            style: Theme.of(context)
-                .textTheme
-                .labelSmall
-                ?.copyWith(color: color, fontWeight: FontWeight.w600),
-          ),
-        ),
-      );
+      ),
+    ),
+  );
 }

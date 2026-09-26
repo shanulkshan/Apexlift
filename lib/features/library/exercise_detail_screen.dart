@@ -70,7 +70,7 @@ class _ExerciseDetail extends StatelessWidget {
 
     return ListView(
       padding: EdgeInsets.fromLTRB(
-          20, media.padding.top + 64, 20, kGlassNavBarClearance),
+          20, media.padding.top + 64, 20, navBarClearance(context)),
       children: [
         // Animation in a glass frame.
         Center(

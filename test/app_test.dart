@@ -13,7 +13,7 @@ import 'support/fakes.dart';
 
 void main() {
   testWidgets('downloads the catalog and browses the library', (tester) async {
-    SharedPreferences.setMockInitialValues({});
+    SharedPreferences.setMockInitialValues({'profile.onboarded': true});
     final prefs = await SharedPreferences.getInstance();
     final db = AppDatabase(DatabaseConnection(
       NativeDatabase.memory(),

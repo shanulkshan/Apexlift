@@ -19,16 +19,31 @@ Flutter app for gym-goers, shipping to Google Play and the App Store.
 - Settings: theme (dark/light/system), weight unit (kg/lb)
 - English strings in ARB files, ready for translation
 
-## Phase 2: Workouts (next)
-- **Routines:** create, rename, reorder and duplicate. Add exercises from the library.
-- **Per-exercise targets:** sets × reps × weight, rest time, notes. Set types: warm-up, working, drop set, failure. Supersets.
-- **Split templates:** PPL, Upper/Lower, Full Body, Bro split
-- **Live workout:**
-  - Tick off sets, with last session's numbers shown inline
-  - Auto rest timer with vibration and a notification
-  - Keep-awake, plate calculator, add or swap exercises mid-workout
-  - Finish summary
-- **Custom exercises:** users can add their own (the `isCustom` column already exists)
+## Phase 2: Workouts ✅ (core done)
+- **Routines:** create, edit, drag to reorder exercises, duplicate, delete. Add exercises with a multi-select picker.
+- **Per-exercise targets:** sets with type (warm-up / working / drop / failure), weight, reps, and rest time. Weights are stored in kg and shown in kg or lb.
+- **Live workout** (crash-safe: every change is saved immediately, one active workout at a time):
+  - Tick off sets, with last session's numbers shown as "previous" hints. Tap "previous" to copy it, or tick an empty set to use it.
+  - Auto rest timer with −15/+15/Skip and a vibration when done
+  - Keep-awake, plate calculator, add and remove exercises and sets (swipe to delete)
+  - "Workout in progress" banner above the tabs; resumes after an app restart
+  - Finish (unticked sets are dropped) → summary with duration, volume, sets and best set; save an empty workout as a routine
+- Today's "This week" stats (workouts, volume, day streak) and "Recent workouts" use real data
+
+## Phase 2.5: Personalisation ✅
+- **First-launch onboarding** (skippable, editable later under Profile → Body & training): sex, age, height, body weight, experience, goal
+- **Smart default sets** when adding exercises: last session's numbers if the exercise was done before; otherwise a suggestion from body weight × movement type × equipment × experience/sex/age, rounded to real plate or dumbbell steps. Reps come from the goal.
+- **Time and calorie estimates** on routine cards, in the routine editor (live bar), live during a workout, in the summary and in history. Calories = MET × body weight × time (lifting vs rest) + mechanical work of the load (weight × reps), so heavier lifting burns more.
+- These are heuristics in `lib/data/training/training_estimates.dart`, unit-tested and meant as rough guides. Tune the ratio tables there.
+- **Muscle plans:** Today's "Train by muscle" tiles count exercises from the user's routines. Tapping one opens that muscle's page, which lists the planned exercises and the routines each one is in, plus "Add <muscle> exercises". That opens a picker filtered to the muscle, then a sheet to choose routines (duplicates are skipped) or create a new routine pre-filled with the exercises.
+
+### Phase 2b (next)
+- Split templates (PPL, Upper/Lower, Full Body, Bro split)
+- Supersets, and exercise notes in the live workout
+- Swap exercise mid-workout, reorder exercises during a workout
+- Custom exercises (the `isCustom` column already exists)
+- Rest-timer notification when the app is in the background (needs `flutter_local_notifications`)
+- "Add to routine" from the exercise detail page
 
 ## Phase 3: Progress
 - Workout history calendar and streaks

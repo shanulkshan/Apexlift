@@ -11,7 +11,10 @@ import '../../core/widgets/glass/glass_nav_bar.dart';
 import '../../core/widgets/ox_logo.dart';
 import '../../l10n/app_localizations.dart';
 import '../library/library_providers.dart';
+import '../../core/utils/weight.dart';
+import '../../data/workouts/workout_models.dart';
 import '../settings/settings_controller.dart';
+import '../workouts/workout_providers.dart';
 
 class TodayScreen extends ConsumerWidget {
   const TodayScreen({super.key});
@@ -32,7 +35,7 @@ class TodayScreen extends ConsumerWidget {
       body: SafeArea(
         bottom: false,
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, kGlassNavBarClearance),
+          padding: EdgeInsets.fromLTRB(20, 8, 20, navBarClearance(context)),
           children: [
             Row(
               children: [
@@ -50,8 +53,9 @@ class TodayScreen extends ConsumerWidget {
             Text(
               _greeting(l10n),
               style: theme.textTheme.titleMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w500),
+                color: theme.colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w500,
+              ),
             ),
             Text(l10n.todayGreeting, style: theme.textTheme.displaySmall),
             const SizedBox(height: 20),
@@ -119,9 +123,7 @@ class _HeroCard extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  total > 0
-                      ? l10n.todayHeroTitle(total)
-                      : l10n.todayHeroCta,
+                  total > 0 ? l10n.todayHeroTitle(total) : l10n.todayHeroCta,
                   style: theme.textTheme.headlineSmall,
                 ),
                 const SizedBox(height: 6),
@@ -130,7 +132,8 @@ class _HeroCard extends ConsumerWidget {
                   child: Text(
                     l10n.todayHeroBody,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant),
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 18),
@@ -147,11 +150,15 @@ class _HeroCard extends ConsumerWidget {
                         Text(
                           l10n.todayHeroCta,
                           style: theme.textTheme.labelLarge?.copyWith(
-                              color: theme.colorScheme.onPrimary),
+                            color: theme.colorScheme.onPrimary,
+                          ),
                         ),
                         const SizedBox(width: 6),
-                        Icon(Icons.arrow_forward_rounded,
-                            size: 18, color: theme.colorScheme.onPrimary),
+                        Icon(
+                          Icons.arrow_forward_rounded,
+                          size: 18,
+                          color: theme.colorScheme.onPrimary,
+                        ),
                       ],
                     ),
                   ),
@@ -173,10 +180,8 @@ class _WeekStats extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final unit = ref.watch(settingsProvider.select((s) => s.unit));
-    final unitLabel =
-        unit == WeightUnit.kg ? l10n.settingsUnitKg : l10n.settingsUnitLb;
+    final stats = ref.watch(weekStatsProvider).value ?? WeekStats.empty;
 
-    // Workout logging arrives in Phase 2; until then these are true zeros.
     Widget stat(IconData icon, Color accent, String value, String label) =>
         Expanded(
           child: Glass(
@@ -197,7 +202,8 @@ class _WeekStats extends ConsumerWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant),
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),
@@ -210,24 +216,38 @@ class _WeekStats extends ConsumerWidget {
       children: [
         Row(
           children: [
-            stat(Icons.fitness_center_rounded,
-                dark ? AppColors.volt : AppColors.voltDeep, '0', l10n.statWorkouts),
+            stat(
+              Icons.fitness_center_rounded,
+              dark ? AppColors.volt : AppColors.voltDeep,
+              '${stats.workouts}',
+              l10n.statWorkouts,
+            ),
             const SizedBox(width: 10),
-            stat(Icons.stacked_bar_chart_rounded, theme.colorScheme.secondary,
-                '0 $unitLabel', l10n.statVolume),
+            stat(
+              Icons.stacked_bar_chart_rounded,
+              theme.colorScheme.secondary,
+              formatVolume(stats.volumeKg, unit),
+              l10n.statVolume,
+            ),
             const SizedBox(width: 10),
-            stat(Icons.local_fire_department_rounded,
-                theme.colorScheme.tertiary, '0', l10n.statStreak),
+            stat(
+              Icons.local_fire_department_rounded,
+              theme.colorScheme.tertiary,
+              '${stats.streakDays}',
+              l10n.statStreak,
+            ),
           ],
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(4, 10, 4, 0),
-          child: Text(
-            l10n.todayStatsHint,
-            style: theme.textTheme.bodySmall
-                ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+        if (stats.workouts == 0 && stats.streakDays == 0)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4, 10, 4, 0),
+            child: Text(
+              l10n.todayStatsHint,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
           ),
-        ),
       ],
     );
   }
@@ -247,8 +267,8 @@ class _MuscleGrid extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    final counts = ref.watch(bodyPartCountsProvider).value ?? const {};
+    // Exercises in the user's own routines, not the whole catalog.
+    final counts = ref.watch(plannedBodyPartCountsProvider).value ?? const {};
 
     return GridView.count(
       crossAxisCount: 2,
@@ -260,48 +280,81 @@ class _MuscleGrid extends ConsumerWidget {
       childAspectRatio: 2.3,
       children: [
         for (final (i, part) in bodyPartOptions.indexed)
-          Glass(
-            radius: 20,
-            padding: const EdgeInsets.symmetric(horizontal: 14),
-            onTap: () {
-              ref.read(libraryFilterProvider.notifier).setBodyPart(part);
-              context.go(AppRoutes.library);
-            },
-            child: Row(
+          _MuscleTile(
+            part: part,
+            count: counts[part] ?? 0,
+            accent: _accents[i % _accents.length],
+            label: l10n.plannedCount(counts[part] ?? 0),
+            onTap: () => context.push(AppRoutes.muscle(part)),
+          ),
+      ],
+    );
+  }
+}
+
+class _MuscleTile extends StatelessWidget {
+  const _MuscleTile({
+    required this.part,
+    required this.count,
+    required this.accent,
+    required this.label,
+    required this.onTap,
+  });
+
+  final String part;
+  final int count;
+  final Color accent;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final planned = count > 0;
+    return Glass(
+      radius: 20,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      onTap: onTap,
+      child: Row(
+        children: [
+          Container(
+            width: 6,
+            height: 30,
+            decoration: BoxDecoration(
+              // Dimmed when nothing is planned for this muscle.
+              color: planned ? accent : accent.withValues(alpha: 0.25),
+              borderRadius: BorderRadius.circular(3),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 6,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    color: _accents[i % _accents.length],
-                    borderRadius: BorderRadius.circular(3),
-                  ),
+                Text(
+                  part.titleCase,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleSmall,
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        part.titleCase,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.titleSmall,
-                      ),
-                      Text(
-                        l10n.libraryCount(counts[part] ?? 0),
-                        maxLines: 1,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant),
-                      ),
-                    ],
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: planned
+                        ? theme.colorScheme.onSurfaceVariant
+                        : theme.colorScheme.onSurfaceVariant.withValues(
+                            alpha: 0.6,
+                          ),
                   ),
                 ),
               ],
             ),
           ),
-      ],
+        ],
+      ),
     );
   }
 }

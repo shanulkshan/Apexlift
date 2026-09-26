@@ -91,6 +91,21 @@ final exerciseListProvider = StreamProvider<List<Exercise>>((ref) {
   return ref.watch(exerciseRepositoryProvider).watchExercises(filter);
 });
 
+/// Exercises matching an arbitrary filter (used by the picker, which keeps
+/// its own filter separate from the Library tab's).
+final exerciseSearchProvider =
+    StreamProvider.autoDispose.family<List<Exercise>, ExerciseFilter>(
+  (ref, filter) => ref.watch(exerciseRepositoryProvider).watchExercises(filter),
+);
+
+/// Catalog rows for a set of ids, keyed by the ids joined with commas.
+final exercisesByIdsProvider =
+    StreamProvider.autoDispose.family<Map<String, Exercise>, String>(
+  (ref, joinedIds) => ref
+      .watch(exerciseRepositoryProvider)
+      .watchByIds(joinedIds.isEmpty ? const [] : joinedIds.split(',')),
+);
+
 final exerciseCountProvider = StreamProvider<int>(
   (ref) => ref.watch(exerciseRepositoryProvider).watchCount(),
 );

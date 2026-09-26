@@ -1,22 +1,24 @@
 {
   "@@locale": "en",
   "appTitle": "Oxlift",
-
   "navToday": "Today",
   "navLibrary": "Library",
   "navWorkouts": "Workouts",
   "navProgress": "Progress",
   "navProfile": "Profile",
-
   "back": "Back",
-
   "todayGoodMorning": "Good morning",
   "todayGoodAfternoon": "Good afternoon",
   "todayGoodEvening": "Good evening",
   "todayGreeting": "Ready to lift?",
   "todayHeroTitle": "Explore {count} exercises",
   "@todayHeroTitle": {
-    "placeholders": { "count": { "type": "int", "format": "decimalPattern" } }
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
   },
   "todayHeroBody": "Animated demos, target muscles and step-by-step form cues.",
   "todayHeroCta": "Browse library",
@@ -27,7 +29,6 @@
   "todayStatsHint": "Log your first workout to start filling these in.",
   "todayTrainByMuscle": "Train by muscle",
   "todaySeeAll": "See all",
-
   "libraryTitle": "Library",
   "librarySearchHint": "Search exercises",
   "libraryAll": "All",
@@ -37,15 +38,26 @@
   "libraryClearFilters": "Clear filters",
   "libraryCount": "{count, plural, =1{1 exercise} other{{count} exercises}}",
   "@libraryCount": {
-    "placeholders": { "count": { "type": "int", "format": "decimalPattern" } }
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
   },
   "librarySyncing": "Downloading exercise library… {done}/{total}",
   "@librarySyncing": {
-    "placeholders": { "done": { "type": "int" }, "total": { "type": "int" } }
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
   },
   "librarySyncFailed": "Couldn't download the exercise library. Check your connection.",
   "retry": "Retry",
-
   "exerciseTarget": "Target",
   "exerciseSecondary": "Secondary",
   "exerciseMuscles": "Muscles worked",
@@ -53,11 +65,9 @@
   "exerciseBodyPart": "Body part",
   "exerciseInstructions": "How to do it",
   "exerciseNotFound": "Exercise not found.",
-
   "comingSoonTitle": "Coming soon",
   "workoutsComingSoon": "Build routines, set your sets, reps and weights, and run live workouts with a rest timer.",
   "progressComingSoon": "Charts, personal records, body measurements and your training heatmap.",
-
   "profileTitle": "Profile",
   "profileGuest": "Guest lifter",
   "profileGuestBody": "Sign in to back up and sync your training. Coming soon.",
@@ -70,5 +80,270 @@
   "settingsUnitLb": "lb",
   "settingsCatalog": "Exercise library",
   "settingsCatalogResync": "Re-download exercise library",
-  "settingsCatalogAttribution": "Exercise data and animations by ExerciseDB"
+  "settingsCatalogAttribution": "Exercise data and animations by ExerciseDB",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "save": "Save",
+  "discard": "Discard",
+  "ok": "OK",
+  "keepEditing": "Keep editing",
+  "workoutsStartEmpty": "Start empty workout",
+  "workoutsStartEmptyBody": "Pick exercises as you go.",
+  "workoutsInProgress": "Workout in progress",
+  "workoutsResume": "Resume",
+  "workoutsMyRoutines": "My routines",
+  "workoutsNewRoutine": "New",
+  "workoutsNoRoutines": "No routines yet",
+  "workoutsNoRoutinesBody": "Build your first plan: pick exercises and set your sets, reps and weights.",
+  "workoutsCreateRoutine": "Create routine",
+  "workoutsRecent": "Recent workouts",
+  "routineStart": "Start",
+  "routineEdit": "Edit",
+  "routineDuplicate": "Duplicate",
+  "routineDelete": "Delete",
+  "routineDeleteConfirm": "Delete \"{name}\"?",
+  "@routineDeleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "routineDeleteBody": "Workouts you already logged from it are kept.",
+  "routineCopyName": "{name} (copy)",
+  "@routineCopyName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "routineSummary": "{exercises, plural, =1{1 exercise} other{{exercises} exercises}} · {sets, plural, =1{1 set} other{{sets} sets}}",
+  "@routineSummary": {
+    "placeholders": {
+      "exercises": {
+        "type": "int"
+      },
+      "sets": {
+        "type": "int"
+      }
+    }
+  },
+  "editorNewTitle": "New routine",
+  "editorEditTitle": "Edit routine",
+  "editorNameHint": "Routine name, e.g. Push day",
+  "editorNameRequired": "Give your routine a name.",
+  "editorExercisesRequired": "Add at least one exercise.",
+  "editorEmpty": "No exercises yet. Add some from the library.",
+  "editorDiscardTitle": "Discard changes?",
+  "editorDiscardBody": "Your edits to this routine will be lost.",
+  "setColumnSet": "SET",
+  "setColumnPrevious": "PREVIOUS",
+  "setColumnReps": "REPS",
+  "setColumnTarget": "TARGET",
+  "addSet": "Add set",
+  "removeExercise": "Remove exercise",
+  "exerciseNotes": "Notes",
+  "restLabel": "Rest {time}",
+  "@restLabel": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "restOff": "Rest off",
+  "restTimeTitle": "Rest between sets",
+  "setTypeHint": "Tap the set number to switch between warm-up (W), working, drop (D) and failure (F) sets.",
+  "pickerTitle": "Add exercises",
+  "pickerAdd": "{count, plural, =1{Add 1 exercise} other{Add {count} exercises}}",
+  "@pickerAdd": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutDefaultName": "Workout",
+  "workoutFinish": "Finish",
+  "workoutAddExercises": "Add exercises",
+  "workoutDiscard": "Discard workout",
+  "workoutDiscardTitle": "Discard this workout?",
+  "workoutDiscardBody": "Everything logged in this session will be deleted.",
+  "workoutNothingDoneTitle": "No sets completed",
+  "workoutNothingDoneBody": "Tick off at least one set to finish, or discard the workout.",
+  "workoutFinishTitle": "Finish workout?",
+  "workoutFinishBody": "Nice work! Your sets will be saved to your history.",
+  "workoutFinishUnticked": "{count, plural, =1{1 unticked set will be removed.} other{{count} unticked sets will be removed.}}",
+  "@workoutFinishUnticked": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutEmpty": "Add your first exercise to get going.",
+  "workoutMinimize": "Minimise",
+  "restTimerTitle": "Rest",
+  "restTimerSkip": "Skip",
+  "alreadyActiveTitle": "Workout in progress",
+  "alreadyActiveBody": "Finish or discard your current workout before starting a new one.",
+  "plateTitle": "Plate calculator",
+  "plateTarget": "Target weight",
+  "plateBar": "Bar",
+  "platePerSide": "Per side",
+  "plateRemainder": "{amount} can't be loaded with standard plates.",
+  "@plateRemainder": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "plateBarOnly": "Just the bar.",
+  "summaryTitle": "Workout complete!",
+  "summaryDuration": "Duration",
+  "summaryVolume": "Volume",
+  "summarySets": "Sets",
+  "summaryExercises": "Exercises",
+  "summaryDone": "Done",
+  "summarySaveRoutine": "Save as routine",
+  "summarySavedRoutine": "Saved to your routines",
+  "setsCount": "{count, plural, =1{1 set} other{{count} sets}}",
+  "@setsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bestSet": "Best {set}",
+  "@bestSet": {
+    "placeholders": {
+      "set": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingSkip": "Skip",
+  "onboardingStart": "Get started",
+  "onboardingContinue": "Continue",
+  "onboardingFinish": "Let's lift",
+  "onboardingWelcomeTitle": "Welcome to Oxlift",
+  "onboardingWelcomeBody": "Answer a few quick questions and we'll suggest starting weights and estimate your workout time and calories. You can change this anytime.",
+  "onboardingAboutTitle": "About you",
+  "onboardingAboutBody": "Used to tune starting weights and calorie estimates.",
+  "onboardingBodyTitle": "Your body",
+  "onboardingBodyBody": "Rough numbers are fine. You can update them as you progress.",
+  "onboardingTrainingTitle": "Your training",
+  "onboardingTrainingBody": "This sets your default reps and how heavy we start you.",
+  "profileSex": "Sex",
+  "profileSexMale": "Male",
+  "profileSexFemale": "Female",
+  "profileSexUnspecified": "Other",
+  "profileAge": "Age",
+  "profileYears": "years",
+  "profileHeight": "Height",
+  "profileWeight": "Body weight",
+  "profileExperience": "Experience",
+  "profileGoal": "Main goal",
+  "profileBodyTitle": "Body & training",
+  "profileBodySection": "Body & training",
+  "profileBodyEmpty": "Add your body details for better starting weights and calorie estimates.",
+  "profileBodyEdit": "Edit",
+  "experienceBeginner": "Beginner",
+  "experienceBeginnerBody": "New to lifting, or back after a long break",
+  "experienceIntermediate": "Intermediate",
+  "experienceIntermediateBody": "6 months to 2 years of consistent training",
+  "experienceAdvanced": "Advanced",
+  "experienceAdvancedBody": "2+ years, you know your numbers",
+  "goalMuscle": "Build muscle",
+  "goalStrength": "Get stronger",
+  "goalEndurance": "Endurance",
+  "goalGeneral": "General fitness",
+  "kcal": "{value} kcal",
+  "@kcal": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "estimateLine": "~{duration} · ~{kcal} kcal",
+  "@estimateLine": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      },
+      "kcal": {
+        "type": "int"
+      }
+    }
+  },
+  "estimateTitle": "Estimated workout",
+  "estimateHint": "Rough guide based on your body profile, sets, reps, weights and rest times.",
+  "summaryCalories": "Calories",
+  "plannedCount": "{count, plural, =0{None planned yet} =1{1 exercise planned} other{{count} exercises planned}}",
+  "@plannedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "musclePlanned": "{count, plural, =0{Nothing planned yet} =1{1 exercise in your plans} other{{count} exercises in your plans}}",
+  "@musclePlanned": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "muscleEmptyTitle": "No {muscle} exercises planned",
+  "@muscleEmptyTitle": {
+    "placeholders": {
+      "muscle": {
+        "type": "String"
+      }
+    }
+  },
+  "muscleEmptyBody": "Add some to one of your routines to start training this muscle.",
+  "muscleAdd": "Add {muscle} exercises",
+  "@muscleAdd": {
+    "placeholders": {
+      "muscle": {
+        "type": "String"
+      }
+    }
+  },
+  "muscleUsedIn": "In your routines",
+  "chooseRoutinesTitle": "Add to which routines?",
+  "chooseRoutinesBody": "{count, plural, =1{1 exercise selected} other{{count} exercises selected}}",
+  "@chooseRoutinesBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chooseRoutinesAdd": "{count, plural, =0{Choose routines} =1{Add to 1 routine} other{Add to {count} routines}}",
+  "@chooseRoutinesAdd": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chooseRoutinesNew": "Create a new routine",
+  "chooseRoutinesNewBody": "Start a routine with these exercises",
+  "alreadyAdded": "Already added",
+  "addedToRoutines": "Added to {names}",
+  "@addedToRoutines": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "nothingAdded": "Those exercises are already in the selected routines."
 }

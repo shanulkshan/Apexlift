@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../data/db/app_database.dart';
 import '../data/exercises/exercise_db_api.dart';
 import '../data/exercises/exercise_repository.dart';
+import '../data/workouts/routine_repository.dart';
+import '../data/workouts/workout_repository.dart';
 
 /// Overridden in `main()` with the instance loaded before `runApp`.
 final sharedPreferencesProvider = Provider<SharedPreferences>(
@@ -28,6 +30,12 @@ final gifCacheManagerProvider = Provider<BaseCacheManager>(
     maxNrOfCacheObjects: 2500,
   )),
 );
+
+final routineRepositoryProvider =
+    Provider<RoutineRepository>((ref) => RoutineRepository(ref.watch(databaseProvider)));
+
+final workoutRepositoryProvider =
+    Provider<WorkoutRepository>((ref) => WorkoutRepository(ref.watch(databaseProvider)));
 
 final exerciseRepositoryProvider = Provider<ExerciseRepository>(
   (ref) => ExerciseRepository(

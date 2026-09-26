@@ -33,7 +33,7 @@ class ComingSoonView extends StatelessWidget {
               child: Center(
                 child: Padding(
                   padding:
-                      const EdgeInsets.fromLTRB(24, 0, 24, kGlassNavBarClearance),
+                      EdgeInsets.fromLTRB(24, 0, 24, navBarClearance(context)),
                   child: Glass(
                     radius: 32,
                     padding: const EdgeInsets.fromLTRB(24, 32, 24, 28),
