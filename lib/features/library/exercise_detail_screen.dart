@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/providers.dart';
+import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/widgets/glass/glass_sheet.dart';
 import '../../core/utils/text.dart';
 import '../../core/widgets/glass/ambient_background.dart';
 import '../../core/widgets/glass/glass.dart';
@@ -17,6 +20,9 @@ class ExerciseDetailScreen extends ConsumerWidget {
   const ExerciseDetailScreen({super.key, required this.id});
 
   final String id;
+
+  Future<void> _deleteCustom(BuildContext context, WidgetRef ref) =>
+      _deleteCustomExercise(context, ref, id);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,14 +42,32 @@ class ExerciseDetailScreen extends ConsumerWidget {
                   ? Center(child: Text(l10n.exerciseNotFound))
                   : _ExerciseDetail(exercise: exercise),
             ),
-            // Floating glass back button.
+            // Floating glass back button (+ edit/delete for custom ones).
             SafeArea(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                child: GlassIconButton(
-                  icon: Icons.arrow_back_rounded,
-                  tooltip: l10n.back,
-                  onPressed: () => context.pop(),
+                child: Row(
+                  children: [
+                    GlassIconButton(
+                      icon: Icons.arrow_back_rounded,
+                      tooltip: l10n.back,
+                      onPressed: () => context.pop(),
+                    ),
+                    const Spacer(),
+                    if (exercise.value?.isCustom ?? false) ...[
+                      GlassIconButton(
+                        icon: Icons.edit_rounded,
+                        tooltip: l10n.customEdit,
+                        onPressed: () => context.push(AppRoutes.editCustomExercise(id)),
+                      ),
+                      const SizedBox(width: 10),
+                      GlassIconButton(
+                        icon: Icons.delete_outline_rounded,
+                        tooltip: l10n.customDelete,
+                        onPressed: () => _deleteCustom(context, ref),
+                      ),
+                    ],
+                  ],
                 ),
               ),
             ),
@@ -52,6 +76,31 @@ class ExerciseDetailScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+Future<void> _deleteCustomExercise(
+    BuildContext context, WidgetRef ref, String id) async {
+  final l10n = AppLocalizations.of(context);
+  final repo = ref.read(exerciseRepositoryProvider);
+  if (await repo.isInUse(id)) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.customInUse)));
+    }
+    return;
+  }
+  if (!context.mounted) return;
+  final ok = await showGlassConfirm(
+    context: context,
+    title: l10n.customDeleteTitle,
+    message: l10n.customDeleteBody,
+    confirmLabel: l10n.delete,
+    cancelLabel: l10n.cancel,
+    destructive: true,
+  );
+  if (!ok || !context.mounted) return;
+  context.pop();
+  await repo.deleteCustom(id);
 }
 
 class _ExerciseDetail extends StatelessWidget {

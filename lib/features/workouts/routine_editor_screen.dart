@@ -233,7 +233,9 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
                         final list = [..._draft.exercises];
                         final item = list.removeAt(from);
                         list.insert(to > from ? to - 1 : to, item);
-                        _update(_draft.copyWith(exercises: list));
+                        _update(_draft
+                            .copyWith(exercises: list)
+                            .withNormalizedSupersets());
                       },
                       proxyDecorator: (child, _, _) =>
                           Material(color: Colors.transparent, child: child),
@@ -245,10 +247,15 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
                           child: _DraftExerciseCard(
                             index: i,
                             exercise: e,
+                            isLast: i == _draft.exercises.length - 1,
                             onChanged: (next) => _updateExercise(i, next),
-                            onRemove: () => _update(_draft.copyWith(
-                              exercises: [..._draft.exercises]..removeAt(i),
-                            )),
+                            onLinkNext: () => _update(_draft.linkWithNext(i)),
+                            onUnlink: () => _update(_draft.unlink(i)),
+                            onRemove: () => _update(_draft
+                                .copyWith(
+                                  exercises: [..._draft.exercises]..removeAt(i),
+                                )
+                                .withNormalizedSupersets()),
                           ),
                         );
                       },
@@ -292,13 +299,19 @@ class _DraftExerciseCard extends ConsumerWidget {
   const _DraftExerciseCard({
     required this.index,
     required this.exercise,
+    required this.isLast,
     required this.onChanged,
+    required this.onLinkNext,
+    required this.onUnlink,
     required this.onRemove,
   });
 
   final int index;
   final DraftExercise exercise;
+  final bool isLast;
   final ValueChanged<DraftExercise> onChanged;
+  final VoidCallback onLinkNext;
+  final VoidCallback onUnlink;
   final VoidCallback onRemove;
 
   @override
@@ -313,12 +326,16 @@ class _DraftExerciseCard extends ConsumerWidget {
 
     void setSets(List<DraftSet> sets) => onChanged(exercise.copyWith(sets: sets));
 
+    final group = exercise.supersetGroup;
     return Glass(
       radius: 24,
+      tint: group == null ? null : theme.colorScheme.secondary,
+      tintStrength: 0.1,
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (group != null) SupersetBadge(group: group),
           Row(
             children: [
               ReorderableDragStartListener(
@@ -339,11 +356,22 @@ class _DraftExerciseCard extends ConsumerWidget {
                   style: theme.textTheme.titleSmall,
                 ),
               ),
-              IconButton(
-                tooltip: l10n.removeExercise,
-                onPressed: onRemove,
-                icon: Icon(Icons.delete_outline_rounded,
-                    color: theme.colorScheme.error),
+              PopupMenuButton<void>(
+                icon: const Icon(Icons.more_horiz_rounded),
+                itemBuilder: (context) => [
+                  if (!isLast)
+                    PopupMenuItem(
+                      onTap: onLinkNext,
+                      child: Text(l10n.supersetWithNext),
+                    ),
+                  if (group != null)
+                    PopupMenuItem(onTap: onUnlink, child: Text(l10n.supersetRemove)),
+                  PopupMenuItem(
+                    onTap: onRemove,
+                    child: Text(l10n.removeExercise,
+                        style: TextStyle(color: theme.colorScheme.error)),
+                  ),
+                ],
               ),
             ],
           ),

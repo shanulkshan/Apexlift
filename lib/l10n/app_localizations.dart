@@ -1221,6 +1221,390 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Those exercises are already in the selected routines.'**
   String get nothingAdded;
+
+  /// No description provided for @customBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get customBadge;
+
+  /// No description provided for @customNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New exercise'**
+  String get customNewTitle;
+
+  /// No description provided for @customEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit exercise'**
+  String get customEditTitle;
+
+  /// No description provided for @customName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get customName;
+
+  /// No description provided for @customNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Landmine press'**
+  String get customNameHint;
+
+  /// No description provided for @customNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Give the exercise a name.'**
+  String get customNameRequired;
+
+  /// No description provided for @customBodyPart.
+  ///
+  /// In en, this message translates to:
+  /// **'Body part'**
+  String get customBodyPart;
+
+  /// No description provided for @customEquipment.
+  ///
+  /// In en, this message translates to:
+  /// **'Equipment'**
+  String get customEquipment;
+
+  /// No description provided for @customTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Target muscle (optional)'**
+  String get customTarget;
+
+  /// No description provided for @customTargetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Front delts'**
+  String get customTargetHint;
+
+  /// No description provided for @customInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'How to do it (optional)'**
+  String get customInstructions;
+
+  /// No description provided for @customInstructionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'One step per line'**
+  String get customInstructionsHint;
+
+  /// No description provided for @customCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create exercise'**
+  String get customCreate;
+
+  /// No description provided for @customEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get customEdit;
+
+  /// No description provided for @customDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete exercise'**
+  String get customDelete;
+
+  /// No description provided for @customDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this exercise?'**
+  String get customDeleteTitle;
+
+  /// No description provided for @customDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This can\'t be undone.'**
+  String get customDeleteBody;
+
+  /// No description provided for @customInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s used in your routines or history, so it can\'t be deleted.'**
+  String get customInUse;
+
+  /// No description provided for @pickerCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get pickerCreate;
+
+  /// No description provided for @pickerReplaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace exercise'**
+  String get pickerReplaceTitle;
+
+  /// No description provided for @supersetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Superset {letter}'**
+  String supersetLabel(String letter);
+
+  /// No description provided for @supersetWithNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Superset with next'**
+  String get supersetWithNext;
+
+  /// No description provided for @supersetRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from superset'**
+  String get supersetRemove;
+
+  /// No description provided for @supersetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Supersets: do the exercises back to back and rest after the last one.'**
+  String get supersetHint;
+
+  /// No description provided for @moveUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Move up'**
+  String get moveUp;
+
+  /// No description provided for @moveDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Move down'**
+  String get moveDown;
+
+  /// No description provided for @replaceExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace exercise'**
+  String get replaceExercise;
+
+  /// No description provided for @templatesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout plans'**
+  String get templatesTitle;
+
+  /// No description provided for @templatesBrowse.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse workout plans'**
+  String get templatesBrowse;
+
+  /// No description provided for @templatesBrowseBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Proven splits, ready in one tap'**
+  String get templatesBrowseBody;
+
+  /// No description provided for @templateDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day a week} other{{count} days a week}}'**
+  String templateDays(int count);
+
+  /// No description provided for @templateRoutines.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 routine} other{{count} routines}}'**
+  String templateRoutines(int count);
+
+  /// No description provided for @templateLevelBeginner.
+  ///
+  /// In en, this message translates to:
+  /// **'Beginner friendly'**
+  String get templateLevelBeginner;
+
+  /// No description provided for @templateLevelIntermediate.
+  ///
+  /// In en, this message translates to:
+  /// **'Intermediate'**
+  String get templateLevelIntermediate;
+
+  /// No description provided for @templateAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Add 1 routine} other{Add {count} routines}}'**
+  String templateAdd(int count);
+
+  /// No description provided for @templateAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Added 1 routine to your plans} other{Added {count} routines to your plans}}'**
+  String templateAdded(int count);
+
+  /// No description provided for @templateCatalogMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Download the exercise library first: open the Library tab while online.'**
+  String get templateCatalogMissing;
+
+  /// No description provided for @templateSetsNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting weights are suggested from your profile. Adjust them any time.'**
+  String get templateSetsNote;
+
+  /// No description provided for @templatePplTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Push / Pull / Legs'**
+  String get templatePplTitle;
+
+  /// No description provided for @templatePplBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Hit every muscle twice a week: push, pull and legs, run twice.'**
+  String get templatePplBody;
+
+  /// No description provided for @templateUpperLowerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upper / Lower'**
+  String get templateUpperLowerTitle;
+
+  /// No description provided for @templateUpperLowerBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Four days: upper and lower body, each twice a week.'**
+  String get templateUpperLowerBody;
+
+  /// No description provided for @templateFullBodyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Full body'**
+  String get templateFullBodyTitle;
+
+  /// No description provided for @templateFullBodyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Three sessions a week, alternating A and B. Great for beginners.'**
+  String get templateFullBodyBody;
+
+  /// No description provided for @templateBroSplitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bro split'**
+  String get templateBroSplitTitle;
+
+  /// No description provided for @templateBroSplitBody.
+  ///
+  /// In en, this message translates to:
+  /// **'One muscle group per day, five days a week.'**
+  String get templateBroSplitBody;
+
+  /// No description provided for @templateBodyweightTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bodyweight at home'**
+  String get templateBodyweightTitle;
+
+  /// No description provided for @templateBodyweightBody.
+  ///
+  /// In en, this message translates to:
+  /// **'No gym needed, just a pull-up bar. Three times a week.'**
+  String get templateBodyweightBody;
+
+  /// No description provided for @dayPush.
+  ///
+  /// In en, this message translates to:
+  /// **'Push day'**
+  String get dayPush;
+
+  /// No description provided for @dayPull.
+  ///
+  /// In en, this message translates to:
+  /// **'Pull day'**
+  String get dayPull;
+
+  /// No description provided for @dayLegs.
+  ///
+  /// In en, this message translates to:
+  /// **'Leg day'**
+  String get dayLegs;
+
+  /// No description provided for @dayUpper.
+  ///
+  /// In en, this message translates to:
+  /// **'Upper body'**
+  String get dayUpper;
+
+  /// No description provided for @dayLower.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower body'**
+  String get dayLower;
+
+  /// No description provided for @dayFullBodyA.
+  ///
+  /// In en, this message translates to:
+  /// **'Full body A'**
+  String get dayFullBodyA;
+
+  /// No description provided for @dayFullBodyB.
+  ///
+  /// In en, this message translates to:
+  /// **'Full body B'**
+  String get dayFullBodyB;
+
+  /// No description provided for @dayChest.
+  ///
+  /// In en, this message translates to:
+  /// **'Chest day'**
+  String get dayChest;
+
+  /// No description provided for @dayBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back day'**
+  String get dayBack;
+
+  /// No description provided for @dayShoulders.
+  ///
+  /// In en, this message translates to:
+  /// **'Shoulder day'**
+  String get dayShoulders;
+
+  /// No description provided for @dayArms.
+  ///
+  /// In en, this message translates to:
+  /// **'Arm day'**
+  String get dayArms;
+
+  /// No description provided for @dayBodyweight.
+  ///
+  /// In en, this message translates to:
+  /// **'Bodyweight workout'**
+  String get dayBodyweight;
+
+  /// No description provided for @restNotifTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest\'s over'**
+  String get restNotifTitle;
+
+  /// No description provided for @restNotifBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Time for your next set.'**
+  String get restNotifBody;
+
+  /// No description provided for @restChannelName.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest timer'**
+  String get restChannelName;
+
+  /// No description provided for @restChannelDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts when your rest between sets ends'**
+  String get restChannelDescription;
 }
 
 class _AppLocalizationsDelegate

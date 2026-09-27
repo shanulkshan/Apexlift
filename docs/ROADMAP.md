@@ -37,13 +37,17 @@ Flutter app for gym-goers, shipping to Google Play and the App Store.
 - These are heuristics in `lib/data/training/training_estimates.dart`, unit-tested and meant as rough guides. Tune the ratio tables there.
 - **Muscle plans:** Today's "Train by muscle" tiles count exercises from the user's routines. Tapping one opens that muscle's page, which lists the planned exercises and the routines each one is in, plus "Add <muscle> exercises". That opens a picker filtered to the muscle, then a sheet to choose routines (duplicates are skipped) or create a new routine pre-filled with the exercises.
 
-### Phase 2b (next)
-- Split templates (PPL, Upper/Lower, Full Body, Bro split)
-- Supersets, and exercise notes in the live workout
-- Swap exercise mid-workout, reorder exercises during a workout
-- Custom exercises (the `isCustom` column already exists)
-- Rest-timer notification when the app is in the background (needs `flutter_local_notifications`)
+## Phase 2b ✅
+- **Workout plans:** Push/Pull/Legs, Upper/Lower, Full body, Bro split, Bodyweight at home. Installing one creates a routine per day with smart default sets (`lib/data/templates/`).
+- **Supersets** in routines and live workouts (schema v3 `supersetGroup`). Rest starts only after the last exercise of the round. Groups are kept valid automatically when exercises move or are removed.
+- **Mid-workout changes:** replace an exercise (picker opens filtered to the same muscle, new sets from history or suggestion), move up or down, link or unlink supersets
+- **Custom exercises:** create from the Library or picker, edit or delete from the detail page (deleting is blocked while the exercise is in use). They show a "Custom" badge and a placeholder image.
+- **Rest-timer notification** while the app is in the background (`flutter_local_notifications`). Permission is asked on the first rest, the notification is cancelled when you return to the app, and it uses a monochrome ox status icon. Exact alarms are used when allowed, otherwise inexact.
+
+### Still open (later)
+- Exercise notes in the live workout
 - "Add to routine" from the exercise detail page
+- iOS: verify the notification on a real device (needs a Mac build)
 
 ## Phase 3: Progress
 - Workout history calendar and streaks

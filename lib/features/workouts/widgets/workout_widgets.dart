@@ -8,7 +8,36 @@ import '../../../core/utils/duration.dart';
 import '../../../core/widgets/glass/glass.dart';
 import '../../../core/widgets/glass/glass_sheet.dart';
 import '../../../data/db/app_database.dart';
+import '../../../data/workouts/routine_models.dart';
 import '../../../l10n/app_localizations.dart';
+
+/// "SUPERSET A" label shown on supersetted exercise cards.
+class SupersetBadge extends StatelessWidget {
+  const SupersetBadge({super.key, required this.group});
+
+  final int group;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final color = theme.colorScheme.secondary;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Icon(Icons.link_rounded, size: 16, color: color),
+          const SizedBox(width: 6),
+          Text(
+            l10n.supersetLabel(supersetLetter(group)).toUpperCase(),
+            style: theme.textTheme.labelSmall?.copyWith(
+                color: color, fontWeight: FontWeight.w700, letterSpacing: 1.1),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 /// Rebuilds [builder] every [period] (for live clocks and counters).
 class TickingBuilder extends StatefulWidget {

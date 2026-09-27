@@ -65,6 +65,40 @@ class WorkoutsScreen extends ConsumerWidget {
                       subtitle: l10n.workoutsStartEmptyBody,
                       onTap: () => startWorkout(context, ref),
                     ),
+                  const SizedBox(height: 10),
+                  Glass(
+                    radius: 22,
+                    padding: const EdgeInsets.all(14),
+                    onTap: () => context.push(AppRoutes.templates),
+                    child: Row(
+                      children: [
+                        Glass(
+                          shape: BoxShape.circle,
+                          shadow: false,
+                          child: const SizedBox.square(
+                            dimension: 44,
+                            child: Icon(Icons.auto_awesome_rounded, size: 22),
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(l10n.templatesBrowse,
+                                  style: Theme.of(context).textTheme.titleSmall),
+                              Text(
+                                l10n.templatesBrowseBody,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Icon(Icons.chevron_right_rounded),
+                      ],
+                    ),
+                  ),
                   SectionLabel(
                     l10n.workoutsMyRoutines,
                     trailing: TextButton.icon(

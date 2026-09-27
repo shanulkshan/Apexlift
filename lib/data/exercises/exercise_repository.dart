@@ -75,6 +75,58 @@ class ExerciseRepository {
       (_db.select(_db.exercises)..where((e) => e.id.equals(id)))
           .watchSingleOrNull();
 
+  // ---- Custom exercises ---------------------------------------------------
+
+  /// Creates (no [id]) or updates a user-made exercise. Returns its id.
+  Future<String> saveCustom({
+    String? id,
+    required String name,
+    required String bodyPart,
+    required String equipment,
+    String? targetMuscle,
+    List<String> instructions = const [],
+  }) async {
+    final exerciseId = id ?? 'custom-${DateTime.now().microsecondsSinceEpoch}';
+    await _db.into(_db.exercises).insertOnConflictUpdate(ExercisesCompanion.insert(
+          id: exerciseId,
+          name: name.trim().toLowerCase(),
+          gifUrl: '',
+          bodyParts: [bodyPart],
+          equipments: [equipment],
+          targetMuscles: [
+            (targetMuscle?.trim().isNotEmpty ?? false)
+                ? targetMuscle!.trim().toLowerCase()
+                : bodyPart,
+          ],
+          secondaryMuscles: const [],
+          instructions: [
+            for (final line in instructions)
+              if (line.trim().isNotEmpty) line.trim(),
+          ],
+          isCustom: const Value(true),
+        ));
+    return exerciseId;
+  }
+
+  /// Whether any routine or logged workout uses [id].
+  Future<bool> isInUse(String id) async {
+    final inRoutine = await (_db.select(_db.routineExercises)
+          ..where((t) => t.exerciseId.equals(id))
+          ..limit(1))
+        .getSingleOrNull();
+    if (inRoutine != null) return true;
+    final inWorkout = await (_db.select(_db.workoutExercises)
+          ..where((t) => t.exerciseId.equals(id))
+          ..limit(1))
+        .getSingleOrNull();
+    return inWorkout != null;
+  }
+
+  /// Deletes a custom exercise (catalog exercises are never deleted).
+  Future<void> deleteCustom(String id) => (_db.delete(_db.exercises)
+        ..where((t) => t.id.equals(id) & t.isCustom.equals(true)))
+      .go();
+
   Future<Map<String, Exercise>> getByIds(Iterable<String> ids) async {
     final rows = await (_db.select(_db.exercises)
           ..where((e) => e.id.isIn(ids.toSet())))

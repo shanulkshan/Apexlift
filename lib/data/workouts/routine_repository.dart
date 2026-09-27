@@ -216,6 +216,7 @@ class RoutineRepository {
         exerciseId: e.exerciseId,
         restSeconds: e.restSeconds,
         notes: e.notes ?? '',
+        supersetGroup: e.supersetGroup,
         sets: [
           for (final s in sets)
             DraftSet(
@@ -227,7 +228,8 @@ class RoutineRepository {
   }
 
   /// Inserts or replaces the routine and all its children. Returns its id.
-  Future<int> save(RoutineDraft draft) => _db.transaction(() async {
+  Future<int> save(RoutineDraft input) => _db.transaction(() async {
+        final draft = input.withNormalizedSupersets();
         final name = draft.name.trim();
         int id;
         if (draft.id == null) {
@@ -260,6 +262,7 @@ class RoutineRepository {
                   position: i,
                   restSeconds: Value(e.restSeconds),
                   notes: Value(e.notes.trim().isEmpty ? null : e.notes.trim()),
+                  supersetGroup: Value(e.supersetGroup),
                 ),
               );
           await _db.batch((b) => b.insertAll(_db.routineSets, [
@@ -290,6 +293,7 @@ class RoutineRepository {
             restSeconds: e.restSeconds,
             notes: e.notes,
             sets: e.sets,
+            supersetGroup: e.supersetGroup,
           ),
       ],
     ));

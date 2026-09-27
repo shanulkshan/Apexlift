@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/notifications/rest_alerts.dart';
 import '../../core/providers.dart';
+import '../../l10n/app_localizations.dart';
 import '../../data/db/app_database.dart';
 import '../../data/workouts/routine_models.dart';
 import '../../data/workouts/workout_models.dart';
@@ -60,18 +63,51 @@ class RestTimerState {
       : remaining.inMilliseconds / total.inMilliseconds;
 }
 
-/// Countdown after a completed set. Null state = idle. Vibrates when done.
+/// Countdown after a completed set. Null state = idle. Vibrates when done,
+/// and schedules a system notification if the app is backgrounded mid-rest.
 class RestTimerController extends Notifier<RestTimerState?> {
   Timer? _ticker;
+  bool _inBackground = false;
+
+  RestAlerts get _alerts => ref.read(restAlertsProvider);
 
   @override
   RestTimerState? build() {
-    ref.onDispose(() => _ticker?.cancel());
+    final lifecycle = AppLifecycleListener(
+      onHide: _onBackground,
+      onShow: _onForeground,
+    );
+    ref.onDispose(() {
+      _ticker?.cancel();
+      lifecycle.dispose();
+    });
     return null;
+  }
+
+  void _onBackground() {
+    _inBackground = true;
+    final s = state;
+    if (s == null) return;
+    final l10n = _strings();
+    _alerts.schedule(s.endsAt, title: l10n.restNotifTitle, body: l10n.restNotifBody);
+  }
+
+  void _onForeground() {
+    _inBackground = false;
+    _alerts.cancel();
+  }
+
+  static AppLocalizations _strings() {
+    final locale = WidgetsBinding.instance.platformDispatcher.locale;
+    return lookupAppLocalizations(
+      AppLocalizations.delegate.isSupported(locale) ? locale : const Locale('en'),
+    );
   }
 
   void start(int seconds) {
     if (seconds <= 0) return;
+    // First rest of the session: ask for notification permission.
+    _alerts.ensurePermission();
     final total = Duration(seconds: seconds);
     state = RestTimerState(endsAt: DateTime.now().add(total), total: total);
     _ticker?.cancel();
@@ -93,15 +129,20 @@ class RestTimerController extends Notifier<RestTimerState?> {
   void skip() {
     _ticker?.cancel();
     state = null;
+    _alerts.cancel();
   }
 
   void _tick() {
     final s = state;
     if (s == null) return _ticker?.cancel();
     if (s.remaining == Duration.zero) {
-      HapticFeedback.heavyImpact();
-      SystemSound.play(SystemSoundType.alert);
-      skip();
+      // In the background the scheduled notification does the alerting.
+      if (!_inBackground) {
+        HapticFeedback.heavyImpact();
+        SystemSound.play(SystemSoundType.alert);
+      }
+      _ticker?.cancel();
+      state = null;
     } else {
       // New instance so listeners rebuild with the fresh remaining time.
       state = RestTimerState(endsAt: s.endsAt, total: s.total);

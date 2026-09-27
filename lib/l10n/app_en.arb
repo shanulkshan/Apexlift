@@ -345,5 +345,104 @@
       }
     }
   },
-  "nothingAdded": "Those exercises are already in the selected routines."
+  "nothingAdded": "Those exercises are already in the selected routines.",
+  "customBadge": "Custom",
+  "customNewTitle": "New exercise",
+  "customEditTitle": "Edit exercise",
+  "customName": "Name",
+  "customNameHint": "e.g. Landmine press",
+  "customNameRequired": "Give the exercise a name.",
+  "customBodyPart": "Body part",
+  "customEquipment": "Equipment",
+  "customTarget": "Target muscle (optional)",
+  "customTargetHint": "e.g. Front delts",
+  "customInstructions": "How to do it (optional)",
+  "customInstructionsHint": "One step per line",
+  "customCreate": "Create exercise",
+  "customEdit": "Edit",
+  "customDelete": "Delete exercise",
+  "customDeleteTitle": "Delete this exercise?",
+  "customDeleteBody": "This can't be undone.",
+  "customInUse": "It's used in your routines or history, so it can't be deleted.",
+  "pickerCreate": "Create",
+  "pickerReplaceTitle": "Replace exercise",
+  "supersetLabel": "Superset {letter}",
+  "@supersetLabel": {
+    "placeholders": {
+      "letter": {
+        "type": "String"
+      }
+    }
+  },
+  "supersetWithNext": "Superset with next",
+  "supersetRemove": "Remove from superset",
+  "supersetHint": "Supersets: do the exercises back to back and rest after the last one.",
+  "moveUp": "Move up",
+  "moveDown": "Move down",
+  "replaceExercise": "Replace exercise",
+  "templatesTitle": "Workout plans",
+  "templatesBrowse": "Browse workout plans",
+  "templatesBrowseBody": "Proven splits, ready in one tap",
+  "templateDays": "{count, plural, =1{1 day a week} other{{count} days a week}}",
+  "@templateDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "templateRoutines": "{count, plural, =1{1 routine} other{{count} routines}}",
+  "@templateRoutines": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "templateLevelBeginner": "Beginner friendly",
+  "templateLevelIntermediate": "Intermediate",
+  "templateAdd": "{count, plural, =1{Add 1 routine} other{Add {count} routines}}",
+  "@templateAdd": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "templateAdded": "{count, plural, =1{Added 1 routine to your plans} other{Added {count} routines to your plans}}",
+  "@templateAdded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "templateCatalogMissing": "Download the exercise library first: open the Library tab while online.",
+  "templateSetsNote": "Starting weights are suggested from your profile. Adjust them any time.",
+  "templatePplTitle": "Push / Pull / Legs",
+  "templatePplBody": "Hit every muscle twice a week: push, pull and legs, run twice.",
+  "templateUpperLowerTitle": "Upper / Lower",
+  "templateUpperLowerBody": "Four days: upper and lower body, each twice a week.",
+  "templateFullBodyTitle": "Full body",
+  "templateFullBodyBody": "Three sessions a week, alternating A and B. Great for beginners.",
+  "templateBroSplitTitle": "Bro split",
+  "templateBroSplitBody": "One muscle group per day, five days a week.",
+  "templateBodyweightTitle": "Bodyweight at home",
+  "templateBodyweightBody": "No gym needed, just a pull-up bar. Three times a week.",
+  "dayPush": "Push day",
+  "dayPull": "Pull day",
+  "dayLegs": "Leg day",
+  "dayUpper": "Upper body",
+  "dayLower": "Lower body",
+  "dayFullBodyA": "Full body A",
+  "dayFullBodyB": "Full body B",
+  "dayChest": "Chest day",
+  "dayBack": "Back day",
+  "dayShoulders": "Shoulder day",
+  "dayArms": "Arm day",
+  "dayBodyweight": "Bodyweight workout",
+  "restNotifTitle": "Rest's over",
+  "restNotifBody": "Time for your next set.",
+  "restChannelName": "Rest timer",
+  "restChannelDescription": "Alerts when your rest between sets ends"
 }

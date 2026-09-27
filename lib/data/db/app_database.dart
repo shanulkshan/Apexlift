@@ -63,6 +63,10 @@ class RoutineExercises extends Table {
   IntColumn get position => integer()();
   IntColumn get restSeconds => integer().withDefault(const Constant(90))();
   TextColumn get notes => text().nullable()();
+
+  /// Adjacent exercises sharing a group number form a superset (done
+  /// back-to-back, resting only after the last one). Null = not supersetted.
+  IntColumn get supersetGroup => integer().nullable()();
 }
 
 class RoutineSets extends Table {
@@ -101,6 +105,10 @@ class WorkoutExercises extends Table {
   IntColumn get position => integer()();
   IntColumn get restSeconds => integer().withDefault(const Constant(90))();
   TextColumn get notes => text().nullable()();
+
+  /// Adjacent exercises sharing a group number form a superset (done
+  /// back-to-back, resting only after the last one). Null = not supersetted.
+  IntColumn get supersetGroup => integer().nullable()();
 }
 
 class WorkoutSets extends Table {
@@ -132,7 +140,7 @@ class AppDatabase extends _$AppDatabase {
       : super(executor ?? driftDatabase(name: 'oxlift'));
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -145,6 +153,10 @@ class AppDatabase extends _$AppDatabase {
             await m.createTable(workouts);
             await m.createTable(workoutExercises);
             await m.createTable(workoutSets);
+          }
+          if (from >= 2 && from < 3) {
+            await m.addColumn(routineExercises, routineExercises.supersetGroup);
+            await m.addColumn(workoutExercises, workoutExercises.supersetGroup);
           }
         },
         // SQLite leaves foreign keys (and so cascading deletes) off by default.

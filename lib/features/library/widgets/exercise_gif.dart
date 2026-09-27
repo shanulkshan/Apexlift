@@ -20,6 +20,29 @@ class ExerciseGif extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Custom exercises have no animation: show a branded tile instead.
+    if (url.isEmpty) {
+      final theme = Theme.of(context);
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(radius),
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                theme.colorScheme.primary.withValues(alpha: 0.35),
+                theme.colorScheme.primary.withValues(alpha: 0.12),
+              ],
+            ),
+          ),
+          child: Icon(Icons.fitness_center_rounded,
+              size: size * 0.4, color: theme.colorScheme.onSurface),
+        ),
+      );
+    }
     final dpr = MediaQuery.devicePixelRatioOf(context);
     return ClipRRect(
       borderRadius: BorderRadius.circular(radius),

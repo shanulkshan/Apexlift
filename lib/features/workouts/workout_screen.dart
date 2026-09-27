@@ -20,6 +20,7 @@ import '../../l10n/app_localizations.dart';
 import '../library/widgets/exercise_gif.dart';
 import '../settings/settings_controller.dart';
 import '../../data/training/training_estimates.dart';
+import '../../data/workouts/routine_models.dart';
 import '../profile/user_profile_controller.dart';
 import 'set_defaults.dart';
 import 'widgets/plate_calculator.dart';
@@ -221,12 +222,22 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
                     sliver: SliverList.separated(
                       itemCount: detail.exercises.length,
                       separatorBuilder: (_, _) => const SizedBox(height: 12),
-                      itemBuilder: (context, i) => _WorkoutExerciseCard(
-                        key: ValueKey(detail.exercises[i].entry.id),
-                        detail: detail.exercises[i],
-                        workoutId: detail.workout.id,
-                        unit: unit,
-                      ),
+                      itemBuilder: (context, i) {
+                        final list = detail.exercises;
+                        final group = list[i].entry.supersetGroup;
+                        return _WorkoutExerciseCard(
+                          key: ValueKey(list[i].entry.id),
+                          detail: list[i],
+                          workoutId: detail.workout.id,
+                          unit: unit,
+                          isFirst: i == 0,
+                          isLast: i == list.length - 1,
+                          // In a superset, rest only after the last exercise.
+                          chainedToNext: group != null &&
+                              i + 1 < list.length &&
+                              list[i + 1].entry.supersetGroup == group,
+                        );
+                      },
                     ),
                   ),
                   SliverPadding(
@@ -272,11 +283,29 @@ class _WorkoutExerciseCard extends ConsumerWidget {
     required this.detail,
     required this.workoutId,
     required this.unit,
+    required this.isFirst,
+    required this.isLast,
+    required this.chainedToNext,
   });
 
   final WorkoutExerciseDetail detail;
   final int workoutId;
   final WeightUnit unit;
+  final bool isFirst;
+  final bool isLast;
+  final bool chainedToNext;
+
+  Future<void> _replace(BuildContext context, WidgetRef ref) async {
+    final ids = await context.push<List<String>>(AppRoutes.pickOneExercise(
+        bodyPart: detail.exercise?.bodyParts.firstOrNull));
+    if (ids == null || ids.isEmpty) return;
+    final sets = await defaultSetsFor(ref, ids, excludeWorkoutId: workoutId);
+    await ref.read(workoutRepositoryProvider).replaceExercise(
+          detail.entry.id,
+          ids.single,
+          sets: sets[ids.single] ?? const [DraftSet()],
+        );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -292,12 +321,16 @@ class _WorkoutExerciseCard extends ConsumerWidget {
     final header = theme.textTheme.labelSmall?.copyWith(
         color: theme.colorScheme.onSurfaceVariant, letterSpacing: 0.8);
 
+    final group = entry.supersetGroup;
     return Glass(
       radius: 24,
+      tint: group == null ? null : theme.colorScheme.secondary,
+      tintStrength: 0.1,
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (group != null) SupersetBadge(group: group),
           Row(
             children: [
               if (detail.exercise != null)
@@ -314,6 +347,30 @@ class _WorkoutExerciseCard extends ConsumerWidget {
               PopupMenuButton<void>(
                 icon: const Icon(Icons.more_horiz_rounded),
                 itemBuilder: (context) => [
+                  PopupMenuItem(
+                    onTap: () => _replace(context, ref),
+                    child: Text(l10n.replaceExercise),
+                  ),
+                  if (!isFirst)
+                    PopupMenuItem(
+                      onTap: () => repo.moveExercise(entry.id, -1),
+                      child: Text(l10n.moveUp),
+                    ),
+                  if (!isLast)
+                    PopupMenuItem(
+                      onTap: () => repo.moveExercise(entry.id, 1),
+                      child: Text(l10n.moveDown),
+                    ),
+                  if (!isLast)
+                    PopupMenuItem(
+                      onTap: () => repo.linkWithNext(entry.id),
+                      child: Text(l10n.supersetWithNext),
+                    ),
+                  if (group != null)
+                    PopupMenuItem(
+                      onTap: () => repo.unlinkSuperset(entry.id),
+                      child: Text(l10n.supersetRemove),
+                    ),
                   PopupMenuItem(
                     onTap: () => repo.removeExercise(entry.id),
                     child: Text(l10n.removeExercise,
@@ -356,7 +413,7 @@ class _WorkoutExerciseCard extends ConsumerWidget {
               set: set,
               number: numbers[i],
               previous: i < previous.length ? previous[i] : null,
-              restSeconds: entry.restSeconds,
+              restSeconds: chainedToNext ? 0 : entry.restSeconds,
               unit: unit,
             ),
           TextButton.icon(

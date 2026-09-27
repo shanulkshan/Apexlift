@@ -708,4 +708,240 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get nothingAdded =>
       'Those exercises are already in the selected routines.';
+
+  @override
+  String get customBadge => 'Custom';
+
+  @override
+  String get customNewTitle => 'New exercise';
+
+  @override
+  String get customEditTitle => 'Edit exercise';
+
+  @override
+  String get customName => 'Name';
+
+  @override
+  String get customNameHint => 'e.g. Landmine press';
+
+  @override
+  String get customNameRequired => 'Give the exercise a name.';
+
+  @override
+  String get customBodyPart => 'Body part';
+
+  @override
+  String get customEquipment => 'Equipment';
+
+  @override
+  String get customTarget => 'Target muscle (optional)';
+
+  @override
+  String get customTargetHint => 'e.g. Front delts';
+
+  @override
+  String get customInstructions => 'How to do it (optional)';
+
+  @override
+  String get customInstructionsHint => 'One step per line';
+
+  @override
+  String get customCreate => 'Create exercise';
+
+  @override
+  String get customEdit => 'Edit';
+
+  @override
+  String get customDelete => 'Delete exercise';
+
+  @override
+  String get customDeleteTitle => 'Delete this exercise?';
+
+  @override
+  String get customDeleteBody => 'This can\'t be undone.';
+
+  @override
+  String get customInUse =>
+      'It\'s used in your routines or history, so it can\'t be deleted.';
+
+  @override
+  String get pickerCreate => 'Create';
+
+  @override
+  String get pickerReplaceTitle => 'Replace exercise';
+
+  @override
+  String supersetLabel(String letter) {
+    return 'Superset $letter';
+  }
+
+  @override
+  String get supersetWithNext => 'Superset with next';
+
+  @override
+  String get supersetRemove => 'Remove from superset';
+
+  @override
+  String get supersetHint =>
+      'Supersets: do the exercises back to back and rest after the last one.';
+
+  @override
+  String get moveUp => 'Move up';
+
+  @override
+  String get moveDown => 'Move down';
+
+  @override
+  String get replaceExercise => 'Replace exercise';
+
+  @override
+  String get templatesTitle => 'Workout plans';
+
+  @override
+  String get templatesBrowse => 'Browse workout plans';
+
+  @override
+  String get templatesBrowseBody => 'Proven splits, ready in one tap';
+
+  @override
+  String templateDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days a week',
+      one: '1 day a week',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String templateRoutines(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count routines',
+      one: '1 routine',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get templateLevelBeginner => 'Beginner friendly';
+
+  @override
+  String get templateLevelIntermediate => 'Intermediate';
+
+  @override
+  String templateAdd(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Add $count routines',
+      one: 'Add 1 routine',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String templateAdded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Added $count routines to your plans',
+      one: 'Added 1 routine to your plans',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get templateCatalogMissing =>
+      'Download the exercise library first: open the Library tab while online.';
+
+  @override
+  String get templateSetsNote =>
+      'Starting weights are suggested from your profile. Adjust them any time.';
+
+  @override
+  String get templatePplTitle => 'Push / Pull / Legs';
+
+  @override
+  String get templatePplBody =>
+      'Hit every muscle twice a week: push, pull and legs, run twice.';
+
+  @override
+  String get templateUpperLowerTitle => 'Upper / Lower';
+
+  @override
+  String get templateUpperLowerBody =>
+      'Four days: upper and lower body, each twice a week.';
+
+  @override
+  String get templateFullBodyTitle => 'Full body';
+
+  @override
+  String get templateFullBodyBody =>
+      'Three sessions a week, alternating A and B. Great for beginners.';
+
+  @override
+  String get templateBroSplitTitle => 'Bro split';
+
+  @override
+  String get templateBroSplitBody =>
+      'One muscle group per day, five days a week.';
+
+  @override
+  String get templateBodyweightTitle => 'Bodyweight at home';
+
+  @override
+  String get templateBodyweightBody =>
+      'No gym needed, just a pull-up bar. Three times a week.';
+
+  @override
+  String get dayPush => 'Push day';
+
+  @override
+  String get dayPull => 'Pull day';
+
+  @override
+  String get dayLegs => 'Leg day';
+
+  @override
+  String get dayUpper => 'Upper body';
+
+  @override
+  String get dayLower => 'Lower body';
+
+  @override
+  String get dayFullBodyA => 'Full body A';
+
+  @override
+  String get dayFullBodyB => 'Full body B';
+
+  @override
+  String get dayChest => 'Chest day';
+
+  @override
+  String get dayBack => 'Back day';
+
+  @override
+  String get dayShoulders => 'Shoulder day';
+
+  @override
+  String get dayArms => 'Arm day';
+
+  @override
+  String get dayBodyweight => 'Bodyweight workout';
+
+  @override
+  String get restNotifTitle => 'Rest\'s over';
+
+  @override
+  String get restNotifBody => 'Time for your next set.';
+
+  @override
+  String get restChannelName => 'Rest timer';
+
+  @override
+  String get restChannelDescription =>
+      'Alerts when your rest between sets ends';
 }

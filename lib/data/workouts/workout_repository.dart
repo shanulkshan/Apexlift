@@ -66,6 +66,7 @@ class WorkoutRepository {
                   position: e.position,
                   restSeconds: Value(e.restSeconds),
                   notes: Value(e.notes),
+                  supersetGroup: Value(e.supersetGroup),
                 ),
               );
           final sets = await (_db.select(_db.routineSets)
@@ -162,9 +163,104 @@ class WorkoutRepository {
       });
 
   Future<void> removeExercise(int workoutExerciseId) =>
-      (_db.delete(_db.workoutExercises)
-            ..where((t) => t.id.equals(workoutExerciseId)))
-          .go();
+      _db.transaction(() async {
+        final entry = await _entry(workoutExerciseId);
+        await (_db.delete(_db.workoutExercises)
+              ..where((t) => t.id.equals(workoutExerciseId)))
+            .go();
+        await _normalize(entry.workoutId);
+      });
+
+  /// Swaps an exercise for another, replacing its sets with [sets] (e.g.
+  /// last-session or suggested numbers for the new exercise).
+  Future<void> replaceExercise(
+    int workoutExerciseId,
+    String newExerciseId, {
+    List<DraftSet> sets = const [DraftSet()],
+  }) =>
+      _db.transaction(() async {
+        await (_db.update(_db.workoutExercises)
+              ..where((t) => t.id.equals(workoutExerciseId)))
+            .write(WorkoutExercisesCompanion(exerciseId: Value(newExerciseId)));
+        await (_db.delete(_db.workoutSets)
+              ..where((t) => t.workoutExerciseId.equals(workoutExerciseId)))
+            .go();
+        await _db.batch((b) => b.insertAll(_db.workoutSets, [
+              for (final (i, s) in sets.indexed)
+                WorkoutSetsCompanion.insert(
+                  workoutExerciseId: workoutExerciseId,
+                  position: i,
+                  setType: Value(s.type),
+                  weightKg: Value(s.weightKg),
+                  reps: Value(s.reps),
+                ),
+            ]));
+      });
+
+  /// Moves an exercise one place up (-1) or down (+1).
+  Future<void> moveExercise(int workoutExerciseId, int direction) =>
+      _db.transaction(() async {
+        final entry = await _entry(workoutExerciseId);
+        final list = await _entries(entry.workoutId);
+        final i = list.indexWhere((e) => e.id == workoutExerciseId);
+        final j = i + direction;
+        if (j < 0 || j >= list.length) return;
+        final other = list[j];
+        await (_db.update(_db.workoutExercises)..where((t) => t.id.equals(entry.id)))
+            .write(WorkoutExercisesCompanion(position: Value(other.position)));
+        await (_db.update(_db.workoutExercises)..where((t) => t.id.equals(other.id)))
+            .write(WorkoutExercisesCompanion(position: Value(entry.position)));
+        await _normalize(entry.workoutId);
+      });
+
+  /// Supersets an exercise with the next one.
+  Future<void> linkWithNext(int workoutExerciseId) => _db.transaction(() async {
+        final entry = await _entry(workoutExerciseId);
+        final list = await _entries(entry.workoutId);
+        final i = list.indexWhere((e) => e.id == workoutExerciseId);
+        if (i + 1 >= list.length) return;
+        final draft = RoutineDraft(exercises: [
+          for (final e in list)
+            DraftExercise(exerciseId: e.exerciseId, supersetGroup: e.supersetGroup),
+        ]).linkWithNext(i);
+        await _writeGroups(list, [for (final e in draft.exercises) e.supersetGroup]);
+      });
+
+  /// Takes an exercise out of its superset.
+  Future<void> unlinkSuperset(int workoutExerciseId) => _db.transaction(() async {
+        final entry = await _entry(workoutExerciseId);
+        final list = await _entries(entry.workoutId);
+        final i = list.indexWhere((e) => e.id == workoutExerciseId);
+        final draft = RoutineDraft(exercises: [
+          for (final e in list)
+            DraftExercise(exerciseId: e.exerciseId, supersetGroup: e.supersetGroup),
+        ]).unlink(i);
+        await _writeGroups(list, [for (final e in draft.exercises) e.supersetGroup]);
+      });
+
+  Future<WorkoutExercise> _entry(int id) =>
+      (_db.select(_db.workoutExercises)..where((t) => t.id.equals(id))).getSingle();
+
+  Future<List<WorkoutExercise>> _entries(int workoutId) =>
+      (_db.select(_db.workoutExercises)
+            ..where((t) => t.workoutId.equals(workoutId))
+            ..orderBy([(t) => OrderingTerm.asc(t.position)]))
+          .get();
+
+  /// Re-validates superset groups after exercises move or disappear.
+  Future<void> _normalize(int workoutId) async {
+    final list = await _entries(workoutId);
+    await _writeGroups(
+        list, normalizeSupersetGroups([for (final e in list) e.supersetGroup]));
+  }
+
+  Future<void> _writeGroups(List<WorkoutExercise> list, List<int?> groups) async {
+    for (final (i, e) in list.indexed) {
+      if (e.supersetGroup == groups[i]) continue;
+      await (_db.update(_db.workoutExercises)..where((t) => t.id.equals(e.id)))
+          .write(WorkoutExercisesCompanion(supersetGroup: Value(groups[i])));
+    }
+  }
 
   Future<void> setRest(int workoutExerciseId, int seconds) =>
       (_db.update(_db.workoutExercises)

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/text.dart';
 import '../../core/widgets/glass/ambient_background.dart';
@@ -16,10 +17,17 @@ import '../library/widgets/exercise_gif.dart';
 
 /// Multi-select exercise picker. Pops with the chosen ids, in tap order.
 class ExercisePickerScreen extends ConsumerStatefulWidget {
-  const ExercisePickerScreen({super.key, this.initialBodyPart});
+  const ExercisePickerScreen({
+    super.key,
+    this.initialBodyPart,
+    this.single = false,
+  });
 
   /// Pre-selects a body-part chip (e.g. when adding "chest" exercises).
   final String? initialBodyPart;
+
+  /// Tapping an exercise returns it immediately (replace mode).
+  final bool single;
 
   @override
   ConsumerState<ExercisePickerScreen> createState() =>
@@ -33,7 +41,23 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
 
   void _toggle(String id) {
     HapticFeedback.selectionClick();
+    if (widget.single) {
+      context.pop([id]);
+      return;
+    }
     setState(() => _selected.contains(id) ? _selected.remove(id) : _selected.add(id));
+  }
+
+  /// Make a custom exercise and select it straight away.
+  Future<void> _createCustom() async {
+    final id = await context
+        .push<String>(AppRoutes.newCustomExercise(bodyPart: _filter.bodyPart));
+    if (id == null || !mounted) return;
+    if (widget.single) {
+      context.pop([id]);
+    } else {
+      setState(() => _selected.add(id));
+    }
   }
 
   @override
@@ -63,7 +87,18 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                     onPressed: () => context.pop(),
                   ),
                   const SizedBox(width: 14),
-                  Text(l10n.pickerTitle, style: theme.textTheme.headlineSmall),
+                  Expanded(
+                    child: Text(
+                      widget.single ? l10n.pickerReplaceTitle : l10n.pickerTitle,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.headlineSmall,
+                    ),
+                  ),
+                  TextButton.icon(
+                    onPressed: _createCustom,
+                    icon: const Icon(Icons.add_rounded, size: 18),
+                    label: Text(l10n.pickerCreate),
+                  ),
                 ],
               ),
               bottom: PreferredSize(
@@ -192,6 +227,7 @@ class _PickerTile extends StatelessWidget {
                 ),
                 Text(
                   [
+                    if (exercise.isCustom) AppLocalizations.of(context).customBadge,
                     ...exercise.targetMuscles.take(1),
                     ...exercise.equipments.take(1),
                   ].map((s) => s.titleCase).join(' · '),

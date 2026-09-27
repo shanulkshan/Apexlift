@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/library/custom_exercise_screen.dart';
 import '../../features/library/exercise_detail_screen.dart';
 import '../../features/library/library_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
@@ -16,6 +17,7 @@ import '../../features/workouts/exercise_picker_screen.dart';
 import '../../features/workouts/routine_editor_screen.dart';
 import '../../features/workouts/workout_screen.dart';
 import '../../features/workouts/workout_summary_screen.dart';
+import '../../features/workouts/templates_screen.dart';
 import '../../features/workouts/workouts_screen.dart';
 
 abstract final class AppRoutes {
@@ -39,6 +41,15 @@ abstract final class AppRoutes {
       '${muscle(bodyPart)}/exercise/$id';
   static String pickExercisesFor(String bodyPart) =>
       '$pickExercises?bodyPart=${Uri.encodeQueryComponent(bodyPart)}';
+
+  /// Single-choice picker (e.g. to replace an exercise mid-workout).
+  static String pickOneExercise({String? bodyPart}) =>
+      '$pickExercises?single=1${bodyPart == null ? '' : '&bodyPart=${Uri.encodeQueryComponent(bodyPart)}'}';
+  static const templates = '/plans';
+  static String template(String key) => '/plans/$key';
+  static String newCustomExercise({String? bodyPart}) =>
+      '/custom-exercise${bodyPart == null ? '' : '?bodyPart=${Uri.encodeQueryComponent(bodyPart)}'}';
+  static String editCustomExercise(String id) => '/custom-exercise/$id';
   static String editRoutine(int id) => '/routine/$id';
   static String workoutSummary(int id) => '/workout-summary/$id';
 }
@@ -114,6 +125,34 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
       GoRoute(
+        path: AppRoutes.templates,
+        parentNavigatorKey: rootKey,
+        builder: (context, state) => const TemplatesScreen(),
+        routes: [
+          GoRoute(
+            path: ':key',
+            parentNavigatorKey: rootKey,
+            builder: (context, state) =>
+                TemplateDetailScreen(templateKey: state.pathParameters['key']!),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: '/custom-exercise',
+        parentNavigatorKey: rootKey,
+        builder: (context, state) => CustomExerciseScreen(
+          initialBodyPart: state.uri.queryParameters['bodyPart'],
+        ),
+        routes: [
+          GoRoute(
+            path: ':id',
+            parentNavigatorKey: rootKey,
+            builder: (context, state) =>
+                CustomExerciseScreen(exerciseId: state.pathParameters['id']),
+          ),
+        ],
+      ),
+      GoRoute(
         path: AppRoutes.onboarding,
         parentNavigatorKey: rootKey,
         builder: (context, state) => const OnboardingScreen(),
@@ -154,6 +193,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           fullscreenDialog: true,
           child: ExercisePickerScreen(
             initialBodyPart: state.uri.queryParameters['bodyPart'],
+            single: state.uri.queryParameters['single'] == '1',
           ),
         ),
       ),

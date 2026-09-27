@@ -55,6 +55,17 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               l10n.libraryTitle,
               style: theme.textTheme.headlineMedium,
             ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 12),
+                child: TextButton.icon(
+                  onPressed: () => context.push(AppRoutes.newCustomExercise(
+                      bodyPart: ref.read(libraryFilterProvider).bodyPart)),
+                  icon: const Icon(Icons.add_rounded, size: 18),
+                  label: Text(l10n.pickerCreate),
+                ),
+              ),
+            ],
             flexibleSpace: const GlassBar(),
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(_headerHeight),
@@ -361,6 +372,11 @@ class _ExerciseTile extends StatelessWidget {
                   spacing: 6,
                   runSpacing: 4,
                   children: [
+                    if (exercise.isCustom)
+                      _MiniTag(
+                        label: AppLocalizations.of(context).customBadge,
+                        color: theme.colorScheme.tertiary,
+                      ),
                     if (target != null)
                       _MiniTag(
                         label: target.titleCase,
