@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Placeholder Oxlift mark: ox head with tapered horns. Mirrors OxMarkPainter in lib/core/widgets/ox_logo.dart -->
+  <rect width="1024" height="1024" rx="266" fill="#0B0D10"/>
+  <g fill="#C6FF3D">
+    <path d="M389 481 C205 492 82 410 92 143 C154 307 246 343 410 338 Z"/>
+    <path d="M635 481 C819 492 942 410 932 143 C870 307 778 343 614 338 Z"/>
+    <path d="M317 338 Q512 297 707 338 L645 707 Q512 881 379 707 Z"/>
+  </g>
+  <circle cx="461" cy="717" r="27" fill="#0B0D10"/>
+  <circle cx="563" cy="717" r="27" fill="#0B0D10"/>
+</svg>
